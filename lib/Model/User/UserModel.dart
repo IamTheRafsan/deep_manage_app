@@ -11,6 +11,10 @@ class UserModel {
   final List<String> roles;
   final bool deleted;
   final String? created_date;
+  final String? created_time;
+  final String? updated_date;
+  final String? updated_time;
+
 
   UserModel({
     required this.userId,
@@ -25,6 +29,9 @@ class UserModel {
     required this.roles,
     this.deleted = false,
     this.created_date,
+    this.created_time,
+    this.updated_date,
+    this.updated_time,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +48,9 @@ class UserModel {
       roles: List<String>.from(json['roles']),
       deleted: json['deleted'] ?? false,
       created_date: json['created_date'] ?? '',
+      created_time: json['created_time'] ?? '',
+      updated_date: json['updated_date'] ?? '',
+      updated_time: json['updated_time'] ?? '',
     );
   }
 }

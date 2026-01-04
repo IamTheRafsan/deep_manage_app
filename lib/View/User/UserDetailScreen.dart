@@ -186,6 +186,27 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 28),
+
+                  // User Info
+                  Text(
+                      "Status Information",
+                      style: AppText.SubHeadingText()
+                  ),
+                  const SizedBox(height: 16),
+
+                  InfoCard(
+                    icon: Icons.calendar_today_outlined,
+                    title: "Created Date",
+                    value: "${user.created_date} at ${user.created_time}",
+                  ),
+                  const SizedBox(height: 12),
+
+                  InfoCard(
+                    icon: Icons.update_outlined,
+                    title: "Last Updated",
+                    value: "${user.updated_date} at ${user.updated_time}",
+                  ),
 
                   const SizedBox(height: 28),
 

@@ -27,6 +27,7 @@ class DropDownInputField<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
       value: value,
+      dropdownColor: color.cardBackgroundColor,
       items: items,
       onChanged: enabled ? onChanged : null,
       validator: validator,

@@ -66,6 +66,9 @@ class AuthRepository {
       roles: prefs.getStringList('roles') ?? [],
       deleted: false,
       created_date: prefs.getString('created_date'),
+      created_time: prefs.getString('created_time'),
+      updated_date: prefs.getString('updated_date'),
+      updated_time: prefs.getString('updated_time'),
     );
   }
 

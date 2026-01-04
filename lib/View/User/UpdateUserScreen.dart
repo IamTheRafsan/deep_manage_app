@@ -14,6 +14,7 @@ import '../../Component/SnackBar/SuccessSnackBar.dart';
 import '../../Component/SnackBar/WarningSnackBar.dart';
 import '../../Model/RoleModel/RoleModel.dart';
 import '../../Styles/AppText.dart';
+import '../../Styles/Color.dart';
 
 class UpdateUserScreen extends StatefulWidget {
   final String userId;
@@ -55,7 +56,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
       .toList();
 
   final List<String> _countryOptions = [
-    'Bangladesh', 'USA', 'UK', 'Canada', 'Australia', 'India', 'Pakistan'
+    'Bangladesh'
   ];
   String _selectedCountry = 'Bangladesh';
 
@@ -336,7 +337,8 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
                 runSpacing: 8,
                 children: _selectedRoleNames.map((roleName) {
                   return Chip(
-                    label: Text(roleName),
+                    label: Text(roleName, style: AppText.BodyText(),),
+                    backgroundColor: color.cardBackgroundColor,
                     deleteIcon: const Icon(Icons.close, size: 18),
                     onDeleted: () {
                       setState(() {
@@ -351,45 +353,35 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
               const SizedBox(height: 16),
             ],
           ),
-
-        DropdownButtonFormField<String>(
-          value: null,
-          decoration: InputDecoration(
-            labelText: "Select Role",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
-          items: _availableRoles.map((role) {
+        DropDownInputField<String>(
+            value: null,
+            label: "Select Role",
+            items: _availableRoles.map((role) {
             return DropdownMenuItem<String>(
-              value: role.role_id,
-              child: Text(role.name),
+            value: role.role_id,
+            child: Text(role.name),
             );
-          }).toList(),
-          onChanged: (String? selectedRoleId) {
+            }).toList(),
+            onChanged: (String? selectedRoleId) {
             if (selectedRoleId != null) {
               final selectedRole = _availableRoles.firstWhere(
-                    (role) => role.role_id == selectedRoleId,
-              );
+              (role) => role.role_id == selectedRoleId,
+            );
 
-              if (!_selectedRoleIds.contains(selectedRoleId)) {
-                setState(() {
-                  _selectedRoleIds.add(selectedRoleId);
-                  _selectedRoleNames.add(selectedRole.name);
-                });
-              }
+            if (!_selectedRoleIds.contains(selectedRoleId)) {
+              setState(() {
+              _selectedRoleIds.add(selectedRoleId);
+              _selectedRoleNames.add(selectedRole.name);
+            });
             }
-          },
-          validator: (value) {
+            }
+            },
+            validator: (value) {
             if (_selectedRoleIds.isEmpty) {
-              return 'Please select at least one role';
+            return 'Please select at least one role';
             }
             return null;
-          },
+            },
         ),
         const SizedBox(height: 8),
         Text(
@@ -451,8 +443,6 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
       "warehouse": [],
       "outlet": [],
     };
-
-    print('📤 Sending update data: $updatedData');
 
     try {
       context.read<UserBloc>().add(UpdateUser(widget.userId, updatedData));

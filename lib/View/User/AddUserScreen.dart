@@ -14,6 +14,7 @@ import '../../Component/SnackBar/SuccessSnackBar.dart';
 import '../../Component/SnackBar/WarningSnackBar.dart';
 import '../../Model/RoleModel/RoleModel.dart';
 import '../../Styles/AppText.dart';
+import '../../Styles/Color.dart';
 import 'ViewUserScreen.dart';
 
 class AddUserScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       .toList();
 
   final List<String> _countryOptions = [
-    'Bangladesh', 'USA', 'UK', 'Canada', 'Australia', 'India', 'Pakistan'
+    'Bangladesh'
   ];
   String _selectedCountry = 'Bangladesh';
 
@@ -80,7 +81,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ViewUserScreen(), // Replace with your actual ViewUserScreen
+                  builder: (context) => ViewUserScreen(),
                 ),
                     (route) => false,
               );
@@ -312,7 +313,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 runSpacing: 8,
                 children: _selectedRoleNames.map((roleName) {
                   return Chip(
-                    label: Text(roleName),
+                    label: Text(roleName, style: AppText.BodyText(),),
+                    backgroundColor: color.cardBackgroundColor,
                     deleteIcon: const Icon(Icons.close, size: 18),
                     onDeleted: () {
                       setState(() {
@@ -328,18 +330,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
             ],
           ),
 
-        DropdownButtonFormField<String>(
+        DropDownInputField<String>(
           value: null,
-          decoration: InputDecoration(
-            labelText: "Select Role *",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
+          label: "Select Role",
           items: _availableRoles.map((role) {
             return DropdownMenuItem<String>(
               value: role.role_id,
@@ -367,6 +360,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             return null;
           },
         ),
+
         const SizedBox(height: 8),
         Text(
           "Tip: Select roles from dropdown to assign to user",

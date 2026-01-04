@@ -1,10 +1,17 @@
 import 'package:deep_manage_app/Component/DrawerTiles/CustomExpensionTile.dart';
 import 'package:deep_manage_app/Styles/Color.dart';
+import 'package:deep_manage_app/View/Expense/ViewExpenseCategory.dart';
+import 'package:deep_manage_app/View/ExpenseCategory/AddExpenseCategoryScreen.dart';
+import 'package:deep_manage_app/View/ExpenseCategory/ViewExpenseCategory.dart';
+import 'package:deep_manage_app/View/Outlet/AddOutletScreen.dart';
+import 'package:deep_manage_app/View/Outlet/ViewOutletScreen.dart';
 import 'package:deep_manage_app/View/Role/ViewRoleScreen.dart';
 import 'package:deep_manage_app/View/User/AddUserScreen.dart';
+import 'package:deep_manage_app/View/Warehouse/AddWarehouseScreen.dart';
+import 'package:deep_manage_app/View/Warehouse/ViewWarehouseScreen.dart';
 import 'package:flutter/material.dart';
-
 import '../../Styles/AppText.dart';
+import '../../View/Expense/AddExpenseScreen.dart';
 import '../../View/Role/AddRoleScreen.dart';
 import '../../View/User/ViewUserScreen.dart';
 import '../AppBar/CustomAppBar.dart';
@@ -112,9 +119,138 @@ class GlobalScaffold extends StatelessWidget{
               ],
             ),
 
+            //Warehouse
+            DrawerExpansionTile(
+              icon: Icons.warehouse,
+              title: 'Warehouse',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Warehouse",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewWarehouseScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Warehouse",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddWarehouseScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Outlet
+            DrawerExpansionTile(
+              icon: Icons.shopping_basket_rounded,
+              title: 'Outlet',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Outlet",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewOutletScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Outlet",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddOutletScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Expense
+            DrawerExpansionTile(
+              icon: Icons.money_rounded,
+              title: 'Expense',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Expense",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewExpenseScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Expense",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddExpenseScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Expense Category
+            DrawerExpansionTile(
+              icon: Icons.category_rounded,
+              title: 'Expense Category',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Expense Category",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewExpenseCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Expense Category",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddExpenseCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
+              leading: const Icon(Icons.logout, color: Colors.red,),
+              title: const Text("Logout", style: TextStyle(color: Colors.red),),
               onTap: () => Navigator.of(context).pop(),
             ),
           ],
