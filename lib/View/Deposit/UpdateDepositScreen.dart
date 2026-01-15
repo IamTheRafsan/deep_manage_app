@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../Bloc/Expense/ExpenseBloc.dart';
-import '../../Bloc/Expense/ExpenseEvent.dart';
-import '../../Bloc/Expense/ExpenseState.dart';
-import '../../Bloc/ExpenseCategory/ExpenseCategoryBloc.dart';
-import '../../Bloc/ExpenseCategory/ExpenseCategoryEventBloc.dart';
-import '../../Bloc/ExpenseCategory/ExpenseCategoryStateBloc.dart';
+import '../../Bloc/Deposit/DepositBloc.dart';
+import '../../Bloc/Deposit/DepositEvent.dart';
+import '../../Bloc/Deposit/DepositState.dart';
+import '../../Bloc/DepositCategory/DepositCategoryBloc.dart';
+import '../../Bloc/DepositCategory/DepositCategoryEvent.dart';
+import '../../Bloc/DepositCategory/DepositCategoryState.dart';
 import '../../Component/Buttons/PrimaryButton.dart';
 import '../../Component/GlobalScaffold/GlobalScaffold.dart';
 import '../../Component/Inputs/DropDownInputField.dart';
@@ -13,33 +13,36 @@ import '../../Component/Inputs/TextInputField.dart';
 import '../../Component/SnackBar/SuccessSnackBar.dart';
 import '../../Component/SnackBar/WarningSnackBar.dart';
 import '../../Styles/AppText.dart';
-import '../../Model/ExpenseCategory/ExpenseCategoryModel.dart';
+import '../../Model/DepositCategory/DepositCategoryModel.dart';
 
-class UpdateExpenseScreen extends StatefulWidget {
-  final String expenseId;
+class UpdateDepositScreen extends StatefulWidget {
+  final String depositId;
 
-  const UpdateExpenseScreen({super.key, required this.expenseId});
+  const UpdateDepositScreen({super.key, required this.depositId});
 
   @override
-  State<UpdateExpenseScreen> createState() => _UpdateExpenseScreenState();
+  State<UpdateDepositScreen> createState() => _UpdateDepositScreenState();
 }
 
-class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
+class _UpdateDepositScreenState extends State<UpdateDepositScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   bool _isLoading = false;
   bool _initialDataLoaded = false;
-  List<ExpenseCategoryModel> _categories = [];
+  List<DepositCategoryModel> _categories = [];
   bool _loadingCategories = true;
-  String? _categoriesError;
+  bool _categoriesError = false;
 
   final List<String> _statusOptions = ['PAID', 'UNPAID', 'DUE'];
-  String _selectedStatus = 'DUE';
+  String _selectedStatus = 'PAID';
 
   String? _selectedCategoryId;
   String? _selectedCategoryName;
+
+  // Store the original category ID from the deposit
+  String? _originalCategoryId;
 
   late final List<DropdownMenuItem<String>> statusMenuItems = _statusOptions
       .map((String value) => DropdownMenuItem<String>(
@@ -51,103 +54,117 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
   @override
   void initState() {
     super.initState();
-    print('UpdateExpenseScreen initState called for expense ID: ${widget.expenseId}');
-
-    // Load data after the widget is built
+    print('UpdateDepositScreen initState called');
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('Loading expense and categories...');
-      context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
-      context.read<ExpenseCategoryBloc>().add(LoadExpenseCategory());
+      print('Loading deposit and categories...');
+      context.read<DepositBloc>().add(LoadDepositById(widget.depositId));
+      context.read<DepositCategoryBloc>().add(LoadDepositCategory());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('UpdateExpenseScreen build called');
+    print('UpdateDepositScreen build called');
     print('_loadingCategories: $_loadingCategories');
     print('_categories length: ${_categories.length}');
     print('_categoriesError: $_categoriesError');
 
     return GlobalScaffold(
-      title: "Update Expense",
+      title: "Update Deposit",
       body: MultiBlocListener(
         listeners: [
-          BlocListener<ExpenseBloc, ExpenseState>(
+          BlocListener<DepositBloc, DepositState>(
             listener: (context, state) {
-              print('ExpenseBloc state: ${state.runtimeType}');
+              print('DepositBloc state changed: ${state.runtimeType}');
 
-              if (state is ExpenseLoadedSingle && !_initialDataLoaded) {
-                print('Expense loaded: ${state.expense.name}');
-                final expense = state.expense;
-                _nameController.text = expense.name;
-                _amountController.text = expense.amount.toString();
-                _descriptionController.text = expense.description;
-                _selectedStatus = expense.status;
-                _selectedCategoryId = expense.categoryId;
-                _selectedCategoryName = expense.categoryName;
+              if (state is DepositLoadedSingle && !_initialDataLoaded) {
+                print('Deposit loaded: ${state.deposit.name}');
+                final deposit = state.deposit;
+                _nameController.text = deposit.name;
+                _amountController.text = deposit.amount.toString();
+                _descriptionController.text = deposit.description;
+                _selectedStatus = deposit.status;
 
-                print('Loaded category ID: $_selectedCategoryId');
-                print('Loaded category name: $_selectedCategoryName');
+                // Store the original category ID
+                _originalCategoryId = deposit.categoryId?.toString();
+                print('Original category ID: $_originalCategoryId');
+
+                // Only set the selected category if categories are already loaded
+                if (_categories.isNotEmpty) {
+                  _updateSelectedCategoryFromOriginalId();
+                } else {
+                  // Temporarily store the original ID
+                  _selectedCategoryId = _originalCategoryId;
+                  print('Temporarily set category ID to: $_selectedCategoryId');
+                }
 
                 _initialDataLoaded = true;
                 setState(() {});
               }
 
-              if (state is ExpenseUpdated) {
-                SuccessSnackBar.show(context, message: "Expense Updated Successfully!");
+              if (state is DepositUpdated) {
+                SuccessSnackBar.show(context, message: "Deposit Updated Successfully!");
                 Navigator.pop(context);
               }
 
-              if (state is ExpenseError) {
+              if (state is DepositError) {
                 WarningSnackBar.show(context, message: state.message);
                 setState(() => _isLoading = false);
               }
             },
           ),
-          BlocListener<ExpenseCategoryBloc, ExpenseCategoryState>(
+          BlocListener<DepositCategoryBloc, DepositCategoryState>(
             listener: (context, categoryState) {
-              print('ExpenseCategoryBloc state: ${categoryState.runtimeType}');
+              print('DepositCategoryBloc state changed: ${categoryState.runtimeType}');
 
-              if (categoryState is ExpenseCategoryLoading) {
+              if (categoryState is DepositCategoryLoaded) {
+                print('Categories loaded successfully');
+                print('Number of categories: ${categoryState.depositCategories.length}');
+
+                setState(() {
+                  _categories = categoryState.depositCategories;
+                  _loadingCategories = false;
+                  _categoriesError = false;
+                });
+
+                print('Categories after setState: ${_categories.length}');
+                print('Available category IDs: ${_categories.map((c) => c.id.toString()).toList()}');
+
+                // Now that categories are loaded, update the selected category
+                if (_originalCategoryId != null) {
+                  _updateSelectedCategoryFromOriginalId();
+                } else if (_categories.isNotEmpty && _selectedCategoryId == null) {
+                  // Set default if no category was selected
+                  _selectedCategoryId = _categories.first.id.toString();
+                  _selectedCategoryName = _categories.first.name;
+                  print('Set default category to: $_selectedCategoryId');
+                }
+
+                print('Selected category ID after load: $_selectedCategoryId');
+              }
+
+              if (categoryState is DepositCategoryLoading) {
                 print('Categories loading...');
                 setState(() {
                   _loadingCategories = true;
-                  _categoriesError = null;
+                  _categoriesError = false;
                 });
               }
 
-              if (categoryState is ExpenseCategoryLoaded) {
-                print('Categories loaded successfully');
-                print('Number of categories: ${categoryState.expenseCategories.length}');
-
-                setState(() {
-                  _categories = categoryState.expenseCategories;
-                  _loadingCategories = false;
-                  _categoriesError = null;
-                });
-
-                // Log categories
-                if (_categories.isNotEmpty) {
-                  print('Available categories:');
-                  for (var category in _categories) {
-                    print('  ${category.id}: ${category.name}');
-                  }
-                }
-              }
-
-              if (categoryState is ExpenseCategoryError) {
+              if (categoryState is DepositCategoryError) {
                 print('Categories error: ${categoryState.message}');
                 setState(() {
                   _loadingCategories = false;
-                  _categoriesError = categoryState.message;
+                  _categoriesError = true;
                 });
+                WarningSnackBar.show(context, message: "Failed to load categories: ${categoryState.message}");
               }
             },
           ),
         ],
-        child: BlocBuilder<ExpenseBloc, ExpenseState>(
+        child: BlocBuilder<DepositBloc, DepositState>(
           builder: (context, state) {
-            if (state is ExpenseLoading && !_initialDataLoaded) {
+            if (state is DepositLoading && !_initialDataLoaded) {
               return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +172,7 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
                     CircularProgressIndicator(),
                     SizedBox(height: 16),
                     Text(
-                      "Loading expense data...",
+                      "Loading deposit data...",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -172,14 +189,14 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Expense Information",
+                    "Deposit Information",
                     style: AppText.SubHeadingText(),
                   ),
                   const SizedBox(height: 16),
 
                   TextInputField(
                     controller: _nameController,
-                    label: 'Expense Name *',
+                    label: 'Deposit Name *',
                   ),
                   const SizedBox(height: 16),
 
@@ -198,9 +215,11 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
                     label: 'Status *',
                     items: statusMenuItems,
                     onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedStatus = newValue!;
-                      });
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedStatus = newValue;
+                        });
+                      }
                     },
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
@@ -222,24 +241,24 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
                     width: double.infinity,
                     height: 56,
                     child: PrimaryButton(
-                      onPressed: _isLoading ? null : _updateExpense,
-                      text: _isLoading ? 'Updating...' : 'Update Expense',
+                      onPressed: _isLoading ? null : _updateDeposit,
+                      text: _isLoading ? 'Updating...' : 'Update Deposit',
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  // Debug button to retry loading categories
-                  if (_categoriesError != null || _loadingCategories)
+                  // Debug button to manually trigger category load
+                  if (_loadingCategories || _categoriesError)
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          print('Retrying to load categories...');
+                          print('Manually reloading categories...');
                           setState(() {
                             _loadingCategories = true;
-                            _categoriesError = null;
+                            _categoriesError = false;
                           });
-                          context.read<ExpenseCategoryBloc>().add(LoadExpenseCategory());
+                          context.read<DepositCategoryBloc>().add(LoadDepositCategory());
                         },
                         child: const Text('Retry Loading Categories'),
                       ),
@@ -251,6 +270,31 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
         ),
       ),
     );
+  }
+
+  // Helper method to update selected category from original ID
+  void _updateSelectedCategoryFromOriginalId() {
+    if (_originalCategoryId != null && _categories.isNotEmpty) {
+      print('Looking for category with ID: $_originalCategoryId');
+      print('Available IDs: ${_categories.map((c) => c.id.toString()).toList()}');
+
+      try {
+        final matchingCategory = _categories.firstWhere(
+              (category) => category.id.toString() == _originalCategoryId,
+        );
+
+        _selectedCategoryId = matchingCategory.id.toString();
+        _selectedCategoryName = matchingCategory.name;
+
+        print('Found matching category: $_selectedCategoryId ($_selectedCategoryName)');
+      } catch (e) {
+        print('Category not found, using first category as fallback');
+        _selectedCategoryId = _categories.first.id.toString();
+        _selectedCategoryName = _categories.first.name;
+      }
+
+      setState(() {});
+    }
   }
 
   Widget _buildCategoryDropdown() {
@@ -279,7 +323,7 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
               children: [
                 CircularProgressIndicator(),
                 SizedBox(width: 12),
-                Text("Loading expense categories..."),
+                Text("Loading categories..."),
               ],
             ),
           ),
@@ -287,7 +331,7 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
       );
     }
 
-    if (_categoriesError != null) {
+    if (_categoriesError) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -302,16 +346,15 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
               border: Border.all(color: Colors.red),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: const Column(
               children: [
                 Text(
-                  "Error loading categories: $_categoriesError",
-                  style: const TextStyle(color: Colors.red),
+                  "Failed to load categories. Please check your connection and try again.",
+                  style: TextStyle(color: Colors.red),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  "You can still update other fields.",
+                SizedBox(height: 8),
+                Text(
+                  "You can continue without selecting a category, but the deposit may not save properly.",
                   style: TextStyle(fontSize: 12, color: Colors.orange),
                 ),
               ],
@@ -337,7 +380,7 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Text(
-              "No expense categories available.",
+              "No categories available. Please add categories first or contact support.",
               style: TextStyle(color: Colors.orange),
             ),
           ),
@@ -366,9 +409,10 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
                 isExpanded: true,
                 hint: const Text('Select Category'),
                 items: _categories.map((category) {
-                  print('Dropdown item: ${category.id} - ${category.name}');
+                  final categoryIdStr = category.id.toString();
+                  print('Dropdown item: $categoryIdStr - ${category.name}');
                   return DropdownMenuItem<String>(
-                    value: category.id,
+                    value: categoryIdStr,
                     child: Text(category.name),
                   );
                 }).toList(),
@@ -379,12 +423,17 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
                     if (newValue != null) {
                       try {
                         final selectedCategory = _categories.firstWhere(
-                              (category) => category.id == newValue,
+                              (category) => category.id.toString() == newValue,
                         );
                         _selectedCategoryName = selectedCategory.name;
                         print('Category name set to: $_selectedCategoryName');
                       } catch (e) {
                         print('Error finding category: $e');
+                        // If not found, select the first category
+                        if (_categories.isNotEmpty) {
+                          _selectedCategoryId = _categories.first.id.toString();
+                          _selectedCategoryName = _categories.first.name;
+                        }
                       }
                     }
                   });
@@ -396,40 +445,43 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
         if (_selectedCategoryId != null && _selectedCategoryId!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
-            child: Text(
-              'Selected: ${_selectedCategoryName ?? "Unknown"}',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.green,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
+            // child: Text(
+            //   'Selected: ${_selectedCategoryName ?? "Unknown"}',
+            //   style: const TextStyle(
+            //     fontSize: 12,
+            //     color: Colors.green,
+            //     fontStyle: FontStyle.italic,
+            //   ),
+            // ),
           ),
       ],
     );
   }
 
-  Future<void> _updateExpense() async {
-    print('=== UPDATE EXPENSE DEBUG ===');
+  Future<void> _updateDeposit() async {
+    print('=== UPDATE DEPOSIT DEBUG ===');
     print('Name: ${_nameController.text}');
     print('Amount: ${_amountController.text}');
     print('Category ID: $_selectedCategoryId');
     print('Category Name: $_selectedCategoryName');
+    print('Original Category ID: $_originalCategoryId');
     print('Status: $_selectedStatus');
     print('Description: ${_descriptionController.text}');
     print('Categories loaded: ${_categories.isNotEmpty}');
     print('===========================');
 
     // Validation
-    if (_nameController.text.isEmpty || _amountController.text.isEmpty) {
+    if (_nameController.text.isEmpty ||
+        _amountController.text.isEmpty) {
       WarningSnackBar.show(context, message: "Please fill name and amount fields");
       return;
     }
 
+    // Warn but don't block if category is not selected
     if (_selectedCategoryId == null || _selectedCategoryId!.isEmpty) {
-      WarningSnackBar.show(context, message: "No category selected. Using default.");
+      WarningSnackBar.show(context, message: "No category selected. Using default category.");
       if (_categories.isNotEmpty) {
-        _selectedCategoryId = _categories.first.id;
+        _selectedCategoryId = _categories.first.id.toString();
         _selectedCategoryName = _categories.first.name;
       }
     }
@@ -444,13 +496,12 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
 
     final now = DateTime.now();
 
-    // Try different formats to see what works
     final updatedData = {
       "name": _nameController.text.trim(),
       "amount": amount,
       "description": _descriptionController.text.trim(),
       "status": _selectedStatus,
-      "category": {"id": _selectedCategoryId,},
+      "category": {"id": int.tryParse(_selectedCategoryId!) ?? 1,},
       "updated_date": "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}",
       "updated_time": "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}",
     };
@@ -458,9 +509,9 @@ class _UpdateExpenseScreenState extends State<UpdateExpenseScreen> {
     print('Sending update data: $updatedData');
 
     try {
-      context.read<ExpenseBloc>().add(UpdateExpense(widget.expenseId, updatedData));
+      context.read<DepositBloc>().add(UpdateDeposit(widget.depositId, updatedData));
     } catch (e) {
-      print('Error updating expense: $e');
+      print('Error updating deposit: $e');
       WarningSnackBar.show(context, message: "Error: ${e.toString()}");
       setState(() => _isLoading = false);
     }

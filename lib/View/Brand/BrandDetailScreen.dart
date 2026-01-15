@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../Bloc/Expense/ExpenseBloc.dart';
-import '../../Bloc/Expense/ExpenseEvent.dart';
-import '../../Bloc/Expense/ExpenseState.dart';
+import '../../Bloc/Brand/BrandBloc.dart';
+import '../../Bloc/Brand/BrandEvent.dart';
+import '../../Bloc/Brand/BrandState.dart';
 import '../../Component/Buttons/PrimaryButton.dart';
 import '../../Component/Buttons/RedButton.dart';
 import '../../Component/GlobalScaffold/GlobalScaffold.dart';
@@ -11,82 +11,66 @@ import '../../Component/SnackBar/WarningSnackBar.dart';
 import '../../Styles/AppText.dart';
 import '../../Component/Cards/InfoCard.dart';
 import '../../Styles/Color.dart';
-import 'UpdateExpenseScreen.dart';
+import 'UpdateBrandScreen.dart';
 
-class ExpenseDetailScreen extends StatefulWidget {
-  final String expenseId;
+class BrandDetailScreen extends StatefulWidget {
+  final String brandId;
 
-  const ExpenseDetailScreen({super.key, required this.expenseId});
+  const BrandDetailScreen({super.key, required this.brandId});
 
   @override
-  State<ExpenseDetailScreen> createState() => _ExpenseDetailScreenState();
+  State<BrandDetailScreen> createState() => _BrandDetailScreenState();
 }
 
-class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
+class _BrandDetailScreenState extends State<BrandDetailScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
+    context.read<BrandBloc>().add(LoadBrandById(widget.brandId));
   }
 
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
-      title: "Expense Details",
+      title: "Brand Details",
       onBackPressed: () {
-        final bloc = context.read<ExpenseBloc>();
+        final brandBloc = context.read<BrandBloc>();
         Navigator.of(context).pop();
-        bloc.add(LoadExpense());
+        brandBloc.add(LoadBrand());
       },
-      body: BlocConsumer<ExpenseBloc, ExpenseState>(
+      body: BlocConsumer<BrandBloc, BrandState>(
         listener: (context, state) {
-          if (state is ExpenseDeleted) {
-            SuccessSnackBar.show(context, message: "Expense Deleted Successfully!");
-            context.read<ExpenseBloc>().add(LoadExpense());
+          if (state is BrandDeleted) {
+            SuccessSnackBar.show(context, message: "Brand Deleted Successfully!");
+            context.read<BrandBloc>().add(LoadBrand());
             Navigator.pop(context);
           }
 
-          if (state is ExpenseUpdated) {
-            SuccessSnackBar.show(context, message: "Expense Updated Successfully");
-            context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
+          if (state is BrandUpdated) {
+            SuccessSnackBar.show(context, message: "Brand Updated Successfully");
+            context.read<BrandBloc>().add(LoadBrandById(widget.brandId));
           }
 
-          if (state is ExpenseError) {
+          if (state is BrandError) {
             WarningSnackBar.show(context, message: state.message);
           }
         },
         builder: (context, state) {
-          if (state is ExpenseLoading) {
+          if (state is BrandLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if (state is ExpenseLoadedSingle) {
-            final expense = state.expense;
-
-            // Determine status color
-            Color statusColor;
-            switch (expense.status) {
-              case 'PAID':
-                statusColor = Colors.green;
-                break;
-              case 'PENDING':
-                statusColor = Colors.orange;
-                break;
-              case 'CANCELLED':
-                statusColor = Colors.red;
-                break;
-              default:
-                statusColor = Colors.grey;
-            }
+          if (state is BrandLoadedSingle) {
+            final brand = state.brand;
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Expense Header Card
+                  // Brand Header Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -109,7 +93,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
-                                Icons.money_off_outlined,
+                                Icons.branding_watermark_outlined,
                                 color: Colors.white,
                                 size: 24,
                               ),
@@ -120,7 +104,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    expense.name,
+                                    brand.name,
                                     style: AppText.HeadingText(),
                                   ),
                                   const SizedBox(height: 4),
@@ -128,13 +112,13 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: statusColor.withOpacity(0.1),
+                                      color: Colors.blue.shade100,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
-                                      expense.status,
+                                      "Code: ${brand.code}",
                                       style: AppText.BodyText().copyWith(
-                                        color: statusColor,
+                                        color: Colors.blue,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -144,91 +128,37 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          "Amount: ৳${expense.amount}",
-                          style: AppText.SubHeadingText().copyWith(
-                            color: Colors.green,
-                          ),
-                        ),
                       ],
                     ),
                   ),
 
                   const SizedBox(height: 28),
 
-                  // Expense Information Section
+                  // Brand Information Section
                   Text(
-                    "Expense Details",
+                    "Brand Information",
                     style: AppText.SubHeadingText(),
                   ),
                   const SizedBox(height: 16),
 
                   InfoCard(
-                    icon: Icons.category_outlined,
-                    title: "Category",
-                    value: expense.categoryName ?? 'N/A',
+                    icon: Icons.code_outlined,
+                    title: "Brand Code",
+                    value: brand.code,
                   ),
                   const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.description_outlined,
-                    title: "Description",
-                    value: expense.description.isNotEmpty ? expense.description : 'No description',
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Related Information Section
-                  Text(
-                    "Related Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  if (expense.warehouseName != null && expense.warehouseName!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.warehouse_outlined,
-                      title: "Warehouse",
-                      value: expense.warehouseName!,
-                    ),
-                  const SizedBox(height: 12),
-
-                  if (expense.outletName != null && expense.outletName!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.store_outlined,
-                      title: "Outlet",
-                      value: expense.outletName!,
-                    ),
-                  const SizedBox(height: 12),
-
-                  if (expense.userName != null && expense.userName!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.person_outlined,
-                      title: "Created By",
-                      value: expense.userName!,
-                    ),
-
-                  const SizedBox(height: 28),
-
-                  // Audit Information
-                  Text(
-                    "Audit Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
 
                   InfoCard(
                     icon: Icons.calendar_today_outlined,
                     title: "Created Date",
-                    value: "${expense.created_date} at ${expense.created_time}",
+                    value: "${brand.created_date} at ${brand.created_time}",
                   ),
                   const SizedBox(height: 12),
 
                   InfoCard(
                     icon: Icons.update_outlined,
                     title: "Last Updated",
-                    value: "${expense.updated_date} at ${expense.updated_time}",
+                    value: "${brand.updated_date} at ${brand.updated_time}",
                   ),
 
                   const SizedBox(height: 40),
@@ -238,22 +168,22 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                     children: [
                       Expanded(
                         child: RedButton(
-                          text: 'Delete Expense',
+                          text: 'Delete Brand',
                           onPressed: () {
-                            context.read<ExpenseBloc>().add(DeleteExpense(expense.id));
+                            context.read<BrandBloc>().add(DeleteBrand(brand.id));
                           },
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: PrimaryButton(
-                          text: 'Update Expense',
+                          text: 'Update Brand',
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => UpdateExpenseScreen(
-                                  expenseId: expense.id,
+                                builder: (context) => UpdateBrandScreen(
+                                  brandId: brand.id,
                                 ),
                               ),
                             );
@@ -269,7 +199,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
             );
           }
 
-          if (state is ExpenseError) {
+          if (state is BrandError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -281,7 +211,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Error Loading Expense",
+                    "Error Loading Brand",
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -295,7 +225,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
+                      context.read<BrandBloc>().add(LoadBrandById(widget.brandId));
                     },
                     child: const Text("Retry"),
                   ),
@@ -305,7 +235,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
           }
 
           return const Center(
-            child: Text("No expense information available"),
+            child: Text("No brand information available"),
           );
         },
       ),

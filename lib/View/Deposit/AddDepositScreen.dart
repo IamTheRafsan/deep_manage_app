@@ -1,12 +1,11 @@
-// lib/Screens/Expense/AddExpenseScreen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../Bloc/Expense/ExpenseBloc.dart';
-import '../../Bloc/Expense/ExpenseEvent.dart';
-import '../../Bloc/Expense/ExpenseState.dart';
-import '../../Bloc/ExpenseCategory/ExpenseCategoryBloc.dart';
-import '../../Bloc/ExpenseCategory/ExpenseCategoryEventBloc.dart';
-import '../../Bloc/ExpenseCategory/ExpenseCategoryStateBloc.dart';
+import '../../Bloc/Deposit/DepositBloc.dart';
+import '../../Bloc/Deposit/DepositEvent.dart';
+import '../../Bloc/Deposit/DepositState.dart';
+import '../../Bloc/DepositCategory/DepositCategoryBloc.dart';
+import '../../Bloc/DepositCategory/DepositCategoryEvent.dart';
+import '../../Bloc/DepositCategory/DepositCategoryState.dart';
 import '../../Component/Buttons/PrimaryButton.dart';
 import '../../Component/GlobalScaffold/GlobalScaffold.dart';
 import '../../Component/Inputs/DropDownInputField.dart';
@@ -14,28 +13,29 @@ import '../../Component/Inputs/TextInputField.dart';
 import '../../Component/SnackBar/SuccessSnackBar.dart';
 import '../../Component/SnackBar/WarningSnackBar.dart';
 import '../../Styles/AppText.dart';
-import '../../Model/ExpenseCategory/ExpenseCategoryModel.dart';
-import 'ViewExpenseCategory.dart';
+import '../../Model/DepositCategory/DepositCategoryModel.dart';
+import 'ViewDepositScreen.dart';
 
-class AddExpenseScreen extends StatefulWidget {
-  const AddExpenseScreen({super.key});
+class AddDepositScreen extends StatefulWidget {
+  const AddDepositScreen({super.key});
 
   @override
-  State<AddExpenseScreen> createState() => _AddExpenseScreenState();
+  State<AddDepositScreen> createState() => _AddDepositScreenState();
 }
 
-class _AddExpenseScreenState extends State<AddExpenseScreen> {
+class _AddDepositScreenState extends State<AddDepositScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   bool _isLoading = false;
-  List<ExpenseCategoryModel> _categories = [];
+  List<DepositCategoryModel> _categories = [];
   bool _loadingCategories = true;
 
   final List<String> _statusOptions = ['PAID', 'UNPAID', 'DUE'];
   String _selectedStatus = 'PAID';
 
+  // FIXED: Use String? instead of int? to match DropdownMenuItem<String>
   String? _selectedCategoryId;
   String? _selectedCategoryName;
 
@@ -49,43 +49,51 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ExpenseCategoryBloc>().add(LoadExpenseCategory());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DepositCategoryBloc>().add(LoadDepositCategory());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
-      title: "Add New Expense",
-      body: BlocConsumer<ExpenseBloc, ExpenseState>(
+      title: "Add New Deposit",
+      body: BlocConsumer<DepositBloc, DepositState>(
         listener: (context, state) {
-          if (state is ExpenseCreated) {
-            SuccessSnackBar.show(context, message: "Expense Created Successfully!");
+          if (state is DepositCreated) {
+            SuccessSnackBar.show(context, message: "Deposit Created Successfully!");
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ViewExpenseScreen(),
+                  builder: (context) => ViewDepositScreen(),
                 ),
                     (route) => false,
               );
             });
           }
 
-          if (state is ExpenseError) {
+          if (state is DepositError) {
             WarningSnackBar.show(context, message: state.message);
             setState(() => _isLoading = false);
           }
         },
         builder: (context, state) {
-          return BlocListener<ExpenseCategoryBloc, ExpenseCategoryState>(
+          return BlocListener<DepositCategoryBloc, DepositCategoryState>(
             listener: (context, categoryState) {
-              if (categoryState is ExpenseCategoryLoaded) {
+              if (categoryState is DepositCategoryLoaded) {
                 setState(() {
-                  _categories = categoryState.expenseCategories;
+                  _categories = categoryState.depositCategories;
                   _loadingCategories = false;
+
+                  // Set default category if available
+                  if (_categories.isNotEmpty && _selectedCategoryId == null) {
+                    _selectedCategoryId = _categories.first.id.toString();
+                    _selectedCategoryName = _categories.first.name;
+                  }
                 });
               }
-              if (categoryState is ExpenseCategoryError) {
+              if (categoryState is DepositCategoryError) {
                 setState(() {
                   _loadingCategories = false;
                 });
@@ -98,14 +106,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Expense Information",
+                    "Deposit Information",
                     style: AppText.SubHeadingText(),
                   ),
                   const SizedBox(height: 16),
 
                   TextInputField(
                     controller: _nameController,
-                    label: 'Expense Name *',
+                    label: 'Deposit Name *',
                   ),
                   const SizedBox(height: 16),
 
@@ -119,16 +127,19 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   _buildCategoryDropdown(),
                   const SizedBox(height: 16),
 
+                  // FIXED: Explicitly specify type <String> for DropDownInputField
                   DropDownInputField<String>(
                     value: _selectedStatus,
                     label: 'Status *',
                     items: statusMenuItems,
                     onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedStatus = newValue!;
-                      });
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedStatus = newValue;
+                        });
+                      }
                     },
-                    validator: (value) {
+                    validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please select status';
                       }
@@ -148,8 +159,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     width: double.infinity,
                     height: 56,
                     child: PrimaryButton(
-                      onPressed: _isLoading ? null : _createExpense,
-                      text: _isLoading ? 'Creating...' : 'Create Expense',
+                      onPressed: _isLoading ? null : _createDeposit,
+                      text: _isLoading ? 'Creating...' : 'Create Deposit',
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -191,7 +202,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           ),
           items: _categories.map((category) {
             return DropdownMenuItem<String>(
-              value: category.id,
+              value: category.id.toString(), // Convert to string
               child: Text(category.name),
             );
           }).toList(),
@@ -199,12 +210,15 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
             setState(() {
               _selectedCategoryId = newValue;
               if (newValue != null) {
-                final selected = _categories.firstWhere((c) => c.id == newValue);
+                final selected = _categories.firstWhere(
+                      (c) => c.id.toString() == newValue,
+                  orElse: () => _categories.first,
+                );
                 _selectedCategoryName = selected.name;
               }
             });
           },
-          validator: (value) {
+          validator: (String? value) {
             if (value == null || value.isEmpty) {
               return 'Please select category';
             }
@@ -215,10 +229,16 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
-  Future<void> _createExpense() async {
+  Future<void> _createDeposit() async {
+    // Debug logging
+    print('DEBUG: Category ID: $_selectedCategoryId');
+    print('DEBUG: Category Name: $_selectedCategoryName');
+    print('DEBUG: Categories loaded: ${_categories.length}');
+
     if (_nameController.text.isEmpty ||
         _amountController.text.isEmpty ||
-        _selectedCategoryId == null) {
+        _selectedCategoryId == null ||
+        _selectedCategoryId!.isEmpty) {
       WarningSnackBar.show(context, message: "Please fill all required fields");
       return;
     }
@@ -232,18 +252,20 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     setState(() => _isLoading = true);
 
     final now = DateTime.now();
-    final expenseData = {
+    final depositData = {
       "name": _nameController.text.trim(),
       "amount": amount,
       "description": _descriptionController.text.trim(),
       "status": _selectedStatus,
-      "category": {"id": _selectedCategoryId,},
+      "category": _selectedCategoryId, // This is now a string
       "created_date": "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}",
       "created_time": "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}",
     };
 
+    print('DEBUG: Deposit data to send: $depositData');
+
     try {
-      context.read<ExpenseBloc>().add(CreateExpense(expenseData));
+      context.read<DepositBloc>().add(CreateDeposit(depositData));
     } catch (e) {
       WarningSnackBar.show(context, message: "Error: $e");
       setState(() => _isLoading = false);

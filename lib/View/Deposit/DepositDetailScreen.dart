@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../Bloc/Expense/ExpenseBloc.dart';
-import '../../Bloc/Expense/ExpenseEvent.dart';
-import '../../Bloc/Expense/ExpenseState.dart';
+import '../../Bloc/Deposit/DepositBloc.dart';
+import '../../Bloc/Deposit/DepositEvent.dart';
+import '../../Bloc/Deposit/DepositState.dart';
 import '../../Component/Buttons/PrimaryButton.dart';
 import '../../Component/Buttons/RedButton.dart';
 import '../../Component/GlobalScaffold/GlobalScaffold.dart';
@@ -11,63 +11,63 @@ import '../../Component/SnackBar/WarningSnackBar.dart';
 import '../../Styles/AppText.dart';
 import '../../Component/Cards/InfoCard.dart';
 import '../../Styles/Color.dart';
-import 'UpdateExpenseScreen.dart';
+import 'UpdateDepositScreen.dart';
 
-class ExpenseDetailScreen extends StatefulWidget {
-  final String expenseId;
+class DepositDetailScreen extends StatefulWidget {
+  final String depositId;
 
-  const ExpenseDetailScreen({super.key, required this.expenseId});
+  const DepositDetailScreen({super.key, required this.depositId});
 
   @override
-  State<ExpenseDetailScreen> createState() => _ExpenseDetailScreenState();
+  State<DepositDetailScreen> createState() => _DepositDetailScreenState();
 }
 
-class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
+class _DepositDetailScreenState extends State<DepositDetailScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
+    context.read<DepositBloc>().add(LoadDepositById(widget.depositId));
   }
 
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
-      title: "Expense Details",
+      title: "Deposit Details",
       onBackPressed: () {
-        final bloc = context.read<ExpenseBloc>();
+        final bloc = context.read<DepositBloc>();
         Navigator.of(context).pop();
-        bloc.add(LoadExpense());
+        bloc.add(LoadDeposit());
       },
-      body: BlocConsumer<ExpenseBloc, ExpenseState>(
+      body: BlocConsumer<DepositBloc, DepositState>(
         listener: (context, state) {
-          if (state is ExpenseDeleted) {
-            SuccessSnackBar.show(context, message: "Expense Deleted Successfully!");
-            context.read<ExpenseBloc>().add(LoadExpense());
+          if (state is DepositDeleted) {
+            SuccessSnackBar.show(context, message: "Deposit Deleted Successfully!");
+            context.read<DepositBloc>().add(LoadDeposit());
             Navigator.pop(context);
           }
 
-          if (state is ExpenseUpdated) {
-            SuccessSnackBar.show(context, message: "Expense Updated Successfully");
-            context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
+          if (state is DepositUpdated) {
+            SuccessSnackBar.show(context, message: "Deposit Updated Successfully");
+            context.read<DepositBloc>().add(LoadDepositById(widget.depositId));
           }
 
-          if (state is ExpenseError) {
+          if (state is DepositError) {
             WarningSnackBar.show(context, message: state.message);
           }
         },
         builder: (context, state) {
-          if (state is ExpenseLoading) {
+          if (state is DepositLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if (state is ExpenseLoadedSingle) {
-            final expense = state.expense;
+          if (state is DepositLoadedSingle) {
+            final deposit = state.deposit;
 
             // Determine status color
             Color statusColor;
-            switch (expense.status) {
+            switch (deposit.status) {
               case 'PAID':
                 statusColor = Colors.green;
                 break;
@@ -86,7 +86,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Expense Header Card
+                  // Deposit Header Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -109,7 +109,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
-                                Icons.money_off_outlined,
+                                Icons.account_balance_wallet_outlined,
                                 color: Colors.white,
                                 size: 24,
                               ),
@@ -120,7 +120,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    expense.name,
+                                    deposit.name,
                                     style: AppText.HeadingText(),
                                   ),
                                   const SizedBox(height: 4),
@@ -132,7 +132,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
-                                      expense.status,
+                                      deposit.status,
                                       style: AppText.BodyText().copyWith(
                                         color: statusColor,
                                         fontWeight: FontWeight.w500,
@@ -146,7 +146,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Amount: ৳${expense.amount}",
+                          "Amount: ৳${deposit.amount}",
                           style: AppText.SubHeadingText().copyWith(
                             color: Colors.green,
                           ),
@@ -157,9 +157,9 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
 
                   const SizedBox(height: 28),
 
-                  // Expense Information Section
+                  // Deposit Information Section
                   Text(
-                    "Expense Details",
+                    "Deposit Details",
                     style: AppText.SubHeadingText(),
                   ),
                   const SizedBox(height: 16),
@@ -167,14 +167,14 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   InfoCard(
                     icon: Icons.category_outlined,
                     title: "Category",
-                    value: expense.categoryName ?? 'N/A',
+                    value: deposit.categoryName ?? 'N/A',
                   ),
                   const SizedBox(height: 12),
 
                   InfoCard(
                     icon: Icons.description_outlined,
                     title: "Description",
-                    value: expense.description.isNotEmpty ? expense.description : 'No description',
+                    value: deposit.description.isNotEmpty ? deposit.description : 'No description',
                   ),
 
                   const SizedBox(height: 28),
@@ -186,27 +186,27 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  if (expense.warehouseName != null && expense.warehouseName!.isNotEmpty)
+                  if (deposit.warehouseName != null && deposit.warehouseName!.isNotEmpty)
                     InfoCard(
                       icon: Icons.warehouse_outlined,
                       title: "Warehouse",
-                      value: expense.warehouseName!,
+                      value: deposit.warehouseName!,
                     ),
                   const SizedBox(height: 12),
 
-                  if (expense.outletName != null && expense.outletName!.isNotEmpty)
+                  if (deposit.outletName != null && deposit.outletName!.isNotEmpty)
                     InfoCard(
                       icon: Icons.store_outlined,
                       title: "Outlet",
-                      value: expense.outletName!,
+                      value: deposit.outletName!,
                     ),
                   const SizedBox(height: 12),
 
-                  if (expense.userName != null && expense.userName!.isNotEmpty)
+                  if (deposit.userName != null && deposit.userName!.isNotEmpty)
                     InfoCard(
                       icon: Icons.person_outlined,
                       title: "Created By",
-                      value: expense.userName!,
+                      value: deposit.userName!,
                     ),
 
                   const SizedBox(height: 28),
@@ -221,14 +221,14 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   InfoCard(
                     icon: Icons.calendar_today_outlined,
                     title: "Created Date",
-                    value: "${expense.created_date} at ${expense.created_time}",
+                    value: "${deposit.created_date} at ${deposit.created_time}",
                   ),
                   const SizedBox(height: 12),
 
                   InfoCard(
                     icon: Icons.update_outlined,
                     title: "Last Updated",
-                    value: "${expense.updated_date} at ${expense.updated_time}",
+                    value: "${deposit.updated_date} at ${deposit.updated_time}",
                   ),
 
                   const SizedBox(height: 40),
@@ -238,22 +238,22 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                     children: [
                       Expanded(
                         child: RedButton(
-                          text: 'Delete Expense',
+                          text: 'Delete Deposit',
                           onPressed: () {
-                            context.read<ExpenseBloc>().add(DeleteExpense(expense.id));
+                            context.read<DepositBloc>().add(DeleteDeposit(deposit.id));
                           },
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: PrimaryButton(
-                          text: 'Update Expense',
+                          text: 'Update Deposit',
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => UpdateExpenseScreen(
-                                  expenseId: expense.id,
+                                builder: (context) => UpdateDepositScreen(
+                                  depositId: deposit.id,
                                 ),
                               ),
                             );
@@ -269,7 +269,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
             );
           }
 
-          if (state is ExpenseError) {
+          if (state is DepositError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -281,7 +281,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Error Loading Expense",
+                    "Error Loading Deposit",
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -295,7 +295,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<ExpenseBloc>().add(LoadExpenseById(widget.expenseId));
+                      context.read<DepositBloc>().add(LoadDepositById(widget.depositId));
                     },
                     child: const Text("Retry"),
                   ),
@@ -305,7 +305,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
           }
 
           return const Center(
-            child: Text("No expense information available"),
+            child: Text("No deposit information available"),
           );
         },
       ),

@@ -1,17 +1,37 @@
 import 'package:deep_manage_app/Component/DrawerTiles/CustomExpensionTile.dart';
 import 'package:deep_manage_app/Styles/Color.dart';
+import 'package:deep_manage_app/View/Brand/AddBrandScreen.dart';
+import 'package:deep_manage_app/View/Brand/ViewBrandScreen.dart';
+import 'package:deep_manage_app/View/DepositCategory/AddDepositCategoryScreen.dart';
+import 'package:deep_manage_app/View/DepositCategory/ViewDepositCategoryScreen.dart';
 import 'package:deep_manage_app/View/Expense/ViewExpenseCategory.dart';
 import 'package:deep_manage_app/View/ExpenseCategory/AddExpenseCategoryScreen.dart';
 import 'package:deep_manage_app/View/ExpenseCategory/ViewExpenseCategory.dart';
 import 'package:deep_manage_app/View/Outlet/AddOutletScreen.dart';
 import 'package:deep_manage_app/View/Outlet/ViewOutletScreen.dart';
+import 'package:deep_manage_app/View/PaymentType/AddPaymentTypeScreen.dart';
+import 'package:deep_manage_app/View/PaymentType/ViewPaymentTypeScreen.dart';
+import 'package:deep_manage_app/View/Product/ViewProductScreen.dart';
+import 'package:deep_manage_app/View/ProductCategory/AddProductCategoryScreen.dart';
+import 'package:deep_manage_app/View/ProductCategory/ViewProductCategoryScreen.dart';
+import 'package:deep_manage_app/View/Purchase/AddPurchaseScreen.dart';
 import 'package:deep_manage_app/View/Role/ViewRoleScreen.dart';
+import 'package:deep_manage_app/View/Sale/AddSaleScreen.dart';
+import 'package:deep_manage_app/View/Sale/ViewSaleScreen.dart';
 import 'package:deep_manage_app/View/User/AddUserScreen.dart';
 import 'package:deep_manage_app/View/Warehouse/AddWarehouseScreen.dart';
 import 'package:deep_manage_app/View/Warehouse/ViewWarehouseScreen.dart';
+import 'package:deep_manage_app/View/WeightLess/AddWeightLessScreen.dart';
+import 'package:deep_manage_app/View/WeightLess/ViewWeightLessScreen.dart';
+import 'package:deep_manage_app/View/WeightWastage/ViewWeightWastageScreen.dart';
+import 'package:deep_manage_app/View/WeightWastage/WeightWastageScreen.dart';
 import 'package:flutter/material.dart';
 import '../../Styles/AppText.dart';
+import '../../View/Deposit/AddDepositScreen.dart';
+import '../../View/Deposit/ViewDepositScreen.dart';
 import '../../View/Expense/AddExpenseScreen.dart';
+import '../../View/Product/AddProductScreen.dart';
+import '../../View/Purchase/ViewPurchaseScreen.dart';
 import '../../View/Role/AddRoleScreen.dart';
 import '../../View/User/ViewUserScreen.dart';
 import '../AppBar/CustomAppBar.dart';
@@ -240,6 +260,326 @@ class GlobalScaffold extends StatelessWidget{
                         context,
                         MaterialPageRoute(
                           builder: (_) => const AddExpenseCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Deposit
+            DrawerExpansionTile(
+              icon: Icons.credit_card_sharp,
+              title: 'Deposit',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Deposit",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewDepositScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Deposit",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddDepositScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Deposit Category
+            DrawerExpansionTile(
+              icon: Icons.category_rounded,
+              title: 'Deposit Category',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Deposit Category",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewDepositCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Deposit Category",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddDepositCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Brand
+            DrawerExpansionTile(
+              icon: Icons.branding_watermark_rounded,
+              title: 'Brand',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Brand",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewBrandScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Brand",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddBrandScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Category
+            DrawerExpansionTile(
+              icon: Icons.category,
+              title: 'Product Category',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Product Category",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewProductCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Product Category",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddProductCategoryScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Product
+            DrawerExpansionTile(
+              icon: Icons.card_giftcard_rounded,
+              title: 'Product',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Product",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewProductScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Product",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddProductScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Payment Type
+            DrawerExpansionTile(
+              icon: Icons.credit_card_rounded,
+              title: 'Payment Type',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Payment Type",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewPaymentTypeScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Payment Type",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddPaymentTypeScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Purchase
+            DrawerExpansionTile(
+              icon: Icons.attach_money_rounded,
+              title: 'Purchase',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Purchase",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewPurchaseScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Purchase",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddPurchaseScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //Sale
+            DrawerExpansionTile(
+              icon: Icons.attach_money_rounded,
+              title: 'Sale',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Sale",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewSaleScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Sale",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddSaleScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //WeightLess
+            DrawerExpansionTile(
+              icon: Icons.balance_rounded,
+              title: 'Weight Less',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Weight Less",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewWeightLessScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Weight Less",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddWeightLessScreen(),
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+
+            //WeightWastage
+            DrawerExpansionTile(
+              icon: Icons.balance_rounded,
+              title: 'Weight Wastage',
+              children: [
+                DrawerSubMenuItem(
+                    icon: Icons.remove_red_eye_outlined,
+                    title: "View Weight Wastage",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ViewWeightWastageScreen(),
+                        ),
+                      );
+                    }
+                ),
+                DrawerSubMenuItem(
+                    icon: Icons.add_box_outlined,
+                    title: "Add Weight Wastage",
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddWeightWastageScreen(),
                         ),
                       );
                     }
