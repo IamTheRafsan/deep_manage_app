@@ -41,7 +41,6 @@ import 'package:deep_manage_app/Repository/WarehouseRepository.dart';
 import 'package:deep_manage_app/Repository/WeightLessRepository.dart';
 import 'package:deep_manage_app/Repository/WeightWastageRepository.dart';
 import 'package:deep_manage_app/Service/AppSetup.dart';
-import 'package:deep_manage_app/View/User/ViewUserScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,8 +63,8 @@ import 'Repository/RoleRepository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // final prefs = await SharedPreferences.getInstance();
-  // await prefs.clear();
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
   runApp(const MyApp());
 }
 
