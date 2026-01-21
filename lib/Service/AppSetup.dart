@@ -44,6 +44,7 @@ class AppSetup{
           return handler.next(response);
         },
         onError: (DioException error, handler) async {
+
           print('❌ Error: ${error.response?.statusCode} ${error.requestOptions.path}');
           print('📥 Error Data: ${error.response?.data}');
 
@@ -52,6 +53,7 @@ class AppSetup{
             await prefs.remove('token');
             print("⚠️ Token expired. Removed locally.");
           }
+
 
           return handler.next(error);
         },

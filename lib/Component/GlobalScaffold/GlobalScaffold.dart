@@ -1,3 +1,5 @@
+import 'package:deep_manage_app/Bloc/Authentication/AuthBloc.dart';
+import 'package:deep_manage_app/Bloc/Authentication/AuthEvent.dart';
 import 'package:deep_manage_app/Component/DrawerTiles/CustomExpensionTile.dart';
 import 'package:deep_manage_app/Styles/Color.dart';
 import 'package:deep_manage_app/View/Brand/AddBrandScreen.dart';
@@ -26,7 +28,9 @@ import 'package:deep_manage_app/View/WeightLess/ViewWeightLessScreen.dart';
 import 'package:deep_manage_app/View/WeightWastage/ViewWeightWastageScreen.dart';
 import 'package:deep_manage_app/View/WeightWastage/WeightWastageScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Styles/AppText.dart';
+import '../../View/Authentication/LoginScreen.dart';
 import '../../View/Deposit/AddDepositScreen.dart';
 import '../../View/Deposit/ViewDepositScreen.dart';
 import '../../View/Expense/AddExpenseScreen.dart';
@@ -51,6 +55,65 @@ class GlobalScaffold extends StatelessWidget{
     this.showBackButton = true,
     this.onBackPressed,
   });
+
+  // Logout confirmation dialog
+  Future<bool> _showLogoutConfirmation(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
+  // Handle logout
+  void _handleLogout(BuildContext context) async {
+    final shouldLogout = await _showLogoutConfirmation(context);
+
+    if (!shouldLogout) return;
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    // Get AuthBloc and trigger logout
+    final authBloc = context.read<AuthBloc>();
+    authBloc.add(LogoutEvent());
+
+    // Wait for logout to process
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Close loading dialog
+    if (context.mounted) {
+      Navigator.of(context).pop(); // Close loading dialog
+
+      // Navigate to login screen and clear all routes
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => LoginScreen()),
+            (route) => false,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -591,7 +654,7 @@ class GlobalScaffold extends StatelessWidget{
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red,),
               title: const Text("Logout", style: TextStyle(color: Colors.red),),
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () => _handleLogout(context),
             ),
           ],
         ),

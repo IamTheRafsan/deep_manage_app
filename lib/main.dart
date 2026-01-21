@@ -24,7 +24,6 @@ import 'package:deep_manage_app/Bloc/Role/RoleBloc.dart';
 import 'package:deep_manage_app/Bloc/Warehouse/WarehouseBloc.dart';
 import 'package:deep_manage_app/Bloc/WeightLess/WeightLessBloc.dart';
 import 'package:deep_manage_app/Bloc/WeightWastage/WeightWastageBloc.dart';
-import 'package:deep_manage_app/Component/NavigationBar/CustomBottomNavigationBar.dart';
 import 'package:deep_manage_app/Repository/BrandRepository.dart';
 import 'package:deep_manage_app/Repository/DepositCategoryRespository.dart';
 import 'package:deep_manage_app/Repository/DepositRepository.dart';
@@ -47,24 +46,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../ApiService/AuthApi/AuthApi.dart';
 import '../Bloc/Authentication/AuthBloc.dart';
 import '../View/Authentication/LoginScreen.dart';
-import '../View/HomeScreen.dart';
 import '../Repository/AuthRepository.dart';
 import 'ApiService/ProductApi/ProductApi.dart';
 import 'ApiService/RoleApi/RoleApi.dart';
 import 'ApiService/SaleApi/SaleApi.dart';
 import 'ApiService/WeightWastageApi/WeightWastageApi.dart';
-import 'Bloc/Authentication/AuthEvent.dart';
-import 'Bloc/Authentication/AuthState.dart';
 import 'Bloc/Purchase/PurchaseBloc.dart';
-import 'Bloc/Role/RoleEvent.dart';
 import 'Bloc/Sale/SaleBloc.dart';
 import 'Bloc/User/UserBlock.dart';
 import 'Repository/RoleRepository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.clear();
+  // final prefs = await SharedPreferences.getInstance();
+  // await prefs.clear();
   runApp(const MyApp());
 }
 
@@ -117,7 +112,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
           AuthBloc(authRepository: authRepository)
-            ..add(CheckLoginStatusEvent()),
+            //..add(CheckLoginStatusEvent()),
         ),
 
         BlocProvider(
@@ -179,27 +174,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
-          home: BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              if (state is AuthLoading || state is AuthInitial) {
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              }
+          home: LoginScreen(),
 
-              if (state is AuthSuccess) {
-                context.read<RoleBloc>().add(LoadRoles());
-                return CustomBottomNavigationBar();
-              }
-
-              return LoginScreen();
-            },
-          ),
-          routes: {
-          '/login': (context) =>  LoginScreen(),
-          '/home': (context) => const HomeScreen(),
-        },
-      ),
+        ),
     );
   }
 }

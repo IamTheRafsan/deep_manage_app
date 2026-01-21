@@ -14,11 +14,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    print('Login started for: ${event.email}');
+    print('🟡 [AuthBloc] AuthLoading emitted');
 
     try {
+      print('📞 [AuthBloc] Calling authRepository.login()...');
       final token = await authRepository.login(event.email, event.password);
-      print('Login API successful, token received');
+      print('✅ [AuthBloc] Login successful, token received');
 
       final user = await authRepository.getUserData();
       print('getUserData result: ${user != null ? "User found" : "User is NULL"}');
@@ -28,10 +29,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         throw Exception('User data not found after login');
       }
 
-      print('Emitting AuthSuccess for user: ${user.email}');
+      print('🟢 [AuthBloc] Emitting AuthSuccess');
+
       emit(AuthSuccess(token: token, user: user));
+      print('✅ [AuthBloc] AuthSuccess emitted');
     } catch (e) {
-      print('Login error: $e');
+      print('❌ [AuthBloc] Error: $e');
       emit(AuthFailure(error: e.toString()));
     }
   }
@@ -60,5 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await authRepository.logout();
       emit(AuthLoggedOut());
     }
+
+    emit(AuthSuccess(token: token, user: user));
   }
 }

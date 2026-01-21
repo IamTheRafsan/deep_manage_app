@@ -12,6 +12,4 @@ abstract class AuthApi {
   @POST('/auth/login')
   Future<LoginResponse> login(@Body() LoginRequest loginRequest);
 
-  @GET('/auth/me')
-  Future<dynamic> getCurrentUser();
 }

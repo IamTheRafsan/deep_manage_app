@@ -23,7 +23,7 @@ class AuthSuccess extends AuthState {
   const AuthSuccess({required this.token, required this.user});
 
   @override
-  List<Object> get props => [token, user];
+  List<Object> get props => [token];
 }
 
 class AuthFailure extends AuthState {

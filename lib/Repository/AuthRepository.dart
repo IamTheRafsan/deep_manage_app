@@ -1,6 +1,6 @@
+import 'package:deep_manage_app/Service/UserPreferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../ApiService/AuthApi/AuthApi.dart';
 import '../Model/LoginModel/LoginRequest.dart';
 import '../Model/User/UserModel.dart';
