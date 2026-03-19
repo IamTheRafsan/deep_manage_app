@@ -1,4 +1,4 @@
-import 'package:deep_manage_app/Bloc/User/UserBlock.dart';
+import 'package:deep_manage_app/Bloc/User/UserBloc.dart';
 import 'package:deep_manage_app/Bloc/User/UserEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

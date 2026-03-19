@@ -27,7 +27,7 @@ class _ViewWeightLessScreenState extends State<ViewWeightLessScreen> {
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
-      title: "Weight Loss Records",
+      title: "Weight Less Records",
       body: BlocBuilder<WeightLessBloc, WeightLessState>(
         builder: (context, state) {
           if (state is WeightLessLoading) {

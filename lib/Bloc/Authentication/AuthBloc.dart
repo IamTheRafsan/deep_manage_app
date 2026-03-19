@@ -44,12 +44,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoggedOut());
   }
 
-  Future<void> _onCheckLoginStatus(CheckLoginStatusEvent event, Emitter<AuthState> emit) async {
+  Future<void> _onCheckLoginStatus(
+      CheckLoginStatusEvent event,
+      Emitter<AuthState> emit,
+      ) async {
     emit(AuthLoading());
 
     final token = await authRepository.getToken();
     final user = await authRepository.getUserData();
 
+    // No token or user → logged out
     if (token == null || token.isEmpty || user == null) {
       emit(AuthLoggedOut());
       return;
@@ -63,7 +67,5 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await authRepository.logout();
       emit(AuthLoggedOut());
     }
-
-    emit(AuthSuccess(token: token, user: user));
   }
 }

@@ -1,14 +1,13 @@
 import 'package:deep_manage_app/Styles/Color.dart';
 import 'package:deep_manage_app/View/HomeScreen.dart';
+import 'package:deep_manage_app/View/Profile/ProfileScreen.dart';
 import 'package:deep_manage_app/View/PurchaseScreen.dart';
 import 'package:deep_manage_app/View/SaleScreen.dart';
-import 'package:deep_manage_app/View/SettingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Bloc/Navigation/NavigationBloc.dart';
 import '../../Bloc/Navigation/NavigationEvent.dart';
 import '../../Bloc/Navigation/NavigationState.dart';
-import '../../View/Role/ViewRoleScreen.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({super.key});
@@ -19,7 +18,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       const HomeScreen(),
       const SaleScreen(),
       const PurchaseScreen(),
-      const SettingScreen()
+      const ProfileScreen()
     ];
 
     return BlocBuilder<NavigationBloc, NavigationState>(
@@ -64,8 +63,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
                     label: 'Purchase',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.settings, size: state.currentTab == 3 ? 30 : 25),
-                    label: 'Settings',
+                    icon: Icon(Icons.person, size: state.currentTab == 3 ? 30 : 25),
+                    label: 'Profile',
                   ),
                 ],
               ),

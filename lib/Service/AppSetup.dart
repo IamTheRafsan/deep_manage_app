@@ -2,6 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import '../Bloc/Authentication/AuthBloc.dart';
+import '../Bloc/Authentication/AuthEvent.dart';
+import 'GlobalBloc.dart';
+
 class AppSetup{
 
   //Dio
@@ -19,6 +23,7 @@ class AppSetup{
           headers: {'Content-Type': 'application/json', 'Accept': 'application/json',},
       ),
     );
+
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -52,8 +57,17 @@ class AppSetup{
             final prefs = await SharedPreferences.getInstance();
             await prefs.remove('token');
             print("⚠️ Token expired. Removed locally.");
+
+            GlobalBloc.authBloc?.add(LogoutEvent());
           }
 
+          if (error.response?.statusCode == 403) {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove('token');
+            print("⚠️ Token expired. Removed locally.");
+
+            GlobalBloc.authBloc?.add(LogoutEvent());
+          }
 
           return handler.next(error);
         },

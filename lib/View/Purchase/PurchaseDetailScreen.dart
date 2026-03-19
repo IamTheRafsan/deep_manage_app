@@ -1,3 +1,4 @@
+import 'package:deep_manage_app/Component/SafeArea/DetailScreenSafeArea.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Bloc/Purchase/PurchaseBloc.dart';
@@ -98,253 +99,53 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
             // final totalQuantity = purchase.totalQuantity ??
             //     purchase.purchaseItems.fold(0.0, (sum, item) => sum! + (item['quantity'] ?? 0.0));
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Purchase Header Card with Deleted Status
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: purchase.deleted ? Colors.red.shade50 : color.cardBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: purchase.deleted ? Colors.red : color.primaryColor,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: purchase.deleted ? Colors.red : color.primaryColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.shopping_cart_outlined,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    purchase.reference,
-                                    style: AppText.HeadingText(),
-                                  ),
-                                  const SizedBox(height: 4),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Summary Card
-                  Card(
-                    elevation: 2,
-                    color: color.cardBackgroundColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Total Items",
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                purchase.purchaseItems.length.toString(),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Total Quantity",
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              // Text(
-                              //   totalQuantity.toStringAsFixed(2),
-                              //   style: const TextStyle(
-                              //     fontSize: 20,
-                              //     fontWeight: FontWeight.bold,
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Total Amount",
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              // Text(
-                              //   "\$${totalAmount.toStringAsFixed(2)}",
-                              //   style: const TextStyle(
-                              //     fontSize: 20,
-                              //     fontWeight: FontWeight.bold,
-                              //     color: Colors.green,
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Purchase Information
-                  Text(
-                    "Purchase Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  InfoCard(
-                    icon: Icons.store,
-                    title: "Warehouse",
-                    value: purchase.warehouseName?? "Warehouse Name",
-                  ),
-                  const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.account_circle,
-                    title: "Supplier",
-                    value: purchase.supplierName?? "Supplier Name",
-                  ),
-                  const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.account_circle,
-                    title: "Purchased By",
-                    value: purchase.purchasedByName?? "Purchased By Name",
-                  ),
-                  const SizedBox(height: 12),
-
-
-                  if (purchase.paymentTypeName != null && purchase.paymentTypeName!.isNotEmpty)
-                    Column(
-                      children: [
-                        //const SizedBox(height: 12),
-                        InfoCard(
-                          icon: Icons.payment_outlined,
-                          title: "Payment Type",
-                          value: purchase.paymentTypeName!,
-                        ),
-                      ],
-                    ),
-                  const SizedBox(height: 12),
-
-                  //const SizedBox(height: 12),
-                  InfoCard(
-                    icon: Icons.calendar_today_outlined,
-                    title: "Purchase Date",
-                    value: purchase.purchaseDate ?? 'N/A',
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Purchase Items
-                  Text(
-                    "Purchase Items",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  if (purchase.purchaseItems.isEmpty)
-                    Container(
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
                       padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "No items found",
-                          style: TextStyle(color: Colors.grey.shade600),
-                        ),
-                      ),
-                    )
-                  else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: purchase.purchaseItems.length,
-                      itemBuilder: (context, index) {
-                        final item = purchase.purchaseItems[index];
-                        final quantity = item['quantity'] ?? 0.0;
-                        final purchasePrice = item['purchasePrice'] ?? 0.0;
-                        final totalPrice = quantity * purchasePrice;
-                        final productName = item['productName']?.toString() ?? 'Unknown Product';
-
-                        return Card(
-                          color: color.cardBackgroundColor,
-                          margin: const EdgeInsets.only(bottom: 12),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Purchase Header Card with Deleted Status
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: purchase.deleted ? Colors.red.shade50 : color.cardBackgroundColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: purchase.deleted ? Colors.red : color.primaryColor,
+                              ),
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  productName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'Quantity: $quantity',
-                                      style: TextStyle(color: Colors.grey.shade600),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: purchase.deleted ? Colors.red : color.primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.shopping_cart_outlined,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
                                     ),
-                                    Text(
-                                      'Price: \$$purchasePrice',
-                                      style: TextStyle(color: Colors.grey.shade600),
-                                    ),
-                                    Text(
-                                      'Total: \$$totalPrice',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            purchase.reference,
+                                            style: AppText.HeadingText(),
+                                          ),
+                                          const SizedBox(height: 4),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -352,71 +153,271 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
                               ],
                             ),
                           ),
-                        );
-                      },
-                    ),
 
-                  const SizedBox(height: 28),
+                          const SizedBox(height: 28),
 
-                  // Audit Information
-                  Text(
-                    "Audit Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
+                          // Summary Card
+                          Card(
+                            elevation: 2,
+                            color: color.cardBackgroundColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Total Items",
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        purchase.purchaseItems.length.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Total Quantity",
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Text(
+                                      //   totalQuantity.toStringAsFixed(2),
+                                      //   style: const TextStyle(
+                                      //     fontSize: 20,
+                                      //     fontWeight: FontWeight.bold,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Total Amount",
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Text(
+                                      //   "\$${totalAmount.toStringAsFixed(2)}",
+                                      //   style: const TextStyle(
+                                      //     fontSize: 20,
+                                      //     fontWeight: FontWeight.bold,
+                                      //     color: Colors.green,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
 
-                  InfoCard(
-                    icon: Icons.calendar_today_outlined,
-                    title: "Created Date",
-                    value: "${purchase.createdDate ?? 'N/A'} ${purchase.createdTime != null ? 'at ${purchase.createdTime}' : ''}",
-                  ),
+                          const SizedBox(height: 28),
 
-                  // if (purchase.createdByName != null && purchase.createdByName!.isNotEmpty)
-                  //   Column(
-                  //     children: [
-                  //       const SizedBox(height: 12),
-                  //       InfoCard(
-                  //         icon: Icons.person_outline,
-                  //         title: "Created By",
-                  //         value: purchase.createdByName!,
-                  //       ),
-                  //     ],
-                  //   ),
+                          // Purchase Information
+                          Text(
+                            "Purchase Information",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
 
-                  if (purchase.updatedDate != null && purchase.updatedDate!.isNotEmpty)
-                    Column(
-                      children: [
-                        const SizedBox(height: 12),
-                        InfoCard(
-                          icon: Icons.update_outlined,
-                          title: "Last Updated",
-                          value: "${purchase.updatedDate} ${purchase.updatedTime != null ? 'at ${purchase.updatedTime}' : ''}",
-                        ),
-                      ],
-                    ),
+                          InfoCard(
+                            icon: Icons.store,
+                            title: "Warehouse",
+                            value: purchase.warehouseName?? "Warehouse Name",
+                          ),
+                          const SizedBox(height: 12),
 
-                  // if (purchase.updatedByName != null && purchase.updatedByName!.isNotEmpty)
-                  //   Column(
-                  //     children: [
-                  //       const SizedBox(height: 12),
-                  //       InfoCard(
-                  //         icon: Icons.person_outline,
-                  //         title: "Updated By",
-                  //         value: purchase.updatedByName!,
-                  //       ),
-                  //     ],
-                  //   ),
+                          InfoCard(
+                            icon: Icons.account_circle,
+                            title: "Supplier",
+                            value: purchase.supplierName?? "Supplier Name",
+                          ),
+                          const SizedBox(height: 12),
 
-                  const SizedBox(height: 40),
+                          InfoCard(
+                            icon: Icons.account_circle,
+                            title: "Purchased By",
+                            value: purchase.purchasedByName?? "Purchased By Name",
+                          ),
+                          const SizedBox(height: 12),
 
-                  // Action Buttons
-                  if (purchase.deleted)
-                    PrimaryButton(
-                      text: 'Restore Purchase',
-                      onPressed: () => _restorePurchase(purchase),
+
+                          if (purchase.paymentTypeName != null && purchase.paymentTypeName!.isNotEmpty)
+                            Column(
+                              children: [
+                                //const SizedBox(height: 12),
+                                InfoCard(
+                                  icon: Icons.payment_outlined,
+                                  title: "Payment Type",
+                                  value: purchase.paymentTypeName!,
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 12),
+
+                          //const SizedBox(height: 12),
+                          InfoCard(
+                            icon: Icons.calendar_today_outlined,
+                            title: "Purchase Date",
+                            value: purchase.purchaseDate ?? 'N/A',
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Purchase Items
+                          Text(
+                            "Purchase Items",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          if (purchase.purchaseItems.isEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "No items found",
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                              ),
+                            )
+                          else
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: purchase.purchaseItems.length,
+                              itemBuilder: (context, index) {
+                                final item = purchase.purchaseItems[index];
+                                final quantity = item['quantity'] ?? 0.0;
+                                final purchasePrice = item['purchasePrice'] ?? 0.0;
+                                final totalPrice = quantity * purchasePrice;
+                                final productName = item['productName']?.toString() ?? 'Unknown Product';
+
+                                return Card(
+                                  color: color.cardBackgroundColor,
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          productName,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Quantity: $quantity',
+                                              style: TextStyle(color: Colors.grey.shade600),
+                                            ),
+                                            Text(
+                                              'Price: \$$purchasePrice',
+                                              style: TextStyle(color: Colors.grey.shade600),
+                                            ),
+                                            Text(
+                                              'Total: \$$totalPrice',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+
+                          const SizedBox(height: 28),
+
+                          // Audit Information
+                          Text(
+                            "Audit Information",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          InfoCard(
+                            icon: Icons.calendar_today_outlined,
+                            title: "Created Date",
+                            value: "${purchase.createdDate ?? 'N/A'} ${purchase.createdTime != null ? 'at ${purchase.createdTime}' : ''}",
+                          ),
+
+                          // if (purchase.createdByName != null && purchase.createdByName!.isNotEmpty)
+                          //   Column(
+                          //     children: [
+                          //       const SizedBox(height: 12),
+                          //       InfoCard(
+                          //         icon: Icons.person_outline,
+                          //         title: "Created By",
+                          //         value: purchase.createdByName!,
+                          //       ),
+                          //     ],
+                          //   ),
+
+                          if (purchase.updatedDate != null && purchase.updatedDate!.isNotEmpty)
+                            Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                InfoCard(
+                                  icon: Icons.update_outlined,
+                                  title: "Last Updated",
+                                  value: "${purchase.updatedDate} ${purchase.updatedTime != null ? 'at ${purchase.updatedTime}' : ''}",
+                                ),
+                              ],
+                            ),
+
+                          // if (purchase.updatedByName != null && purchase.updatedByName!.isNotEmpty)
+                          //   Column(
+                          //     children: [
+                          //       const SizedBox(height: 12),
+                          //       InfoCard(
+                          //         icon: Icons.person_outline,
+                          //         title: "Updated By",
+                          //         value: purchase.updatedByName!,
+                          //       ),
+                          //     ],
+                          //   ),
+
+                          const SizedBox(height: 40),
+                        ],
+                      ),
                     )
-                  else
-                    Row(
+                ),
+                CustomSafeArea(
+                    child: Row(
                       children: [
                         Expanded(
                           child: RedButton(
@@ -443,10 +444,8 @@ class _PurchaseDetailScreenState extends State<PurchaseDetailScreen> {
                         ),
                       ],
                     ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
+                )
+              ],
             );
           }
 

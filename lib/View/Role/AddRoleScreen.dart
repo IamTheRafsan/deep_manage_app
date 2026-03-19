@@ -23,6 +23,10 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
   List<String> selectedPermissions = [];
   bool isLoading = false;
 
+  bool get isAllSelected => selectedPermissions.length == allPermissions.length;
+
+  bool get isNoneSelected => allPermissions.isEmpty;
+
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
@@ -42,6 +46,17 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
             TextInputField(
               controller: _nameController,
               label: "Enter Role Name",
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Role name cannot be empty';
+                }
+
+                if (value.trim().length < 2 || value.trim().length > 100) {
+                  return 'Role name must be between 2 and 100 characters';
+                }
+
+                return null; // valid
+              },
             ),
             const SizedBox(height: 28),
 
@@ -65,6 +80,37 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
               style: AppText.BodyText()
             ),
             const SizedBox(height: 16),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton.icon(
+                  onPressed: isAllSelected
+                      ? null
+                      : () {
+                    setState(() {
+                      selectedPermissions.clear();
+                      selectedPermissions.addAll(allPermissions);
+                    });
+                  },
+                  icon: const Icon(Icons.select_all),
+                  label: const Text("Select All"),
+                ),
+                TextButton.icon(
+                  onPressed: isNoneSelected
+                      ? null
+                      : () {
+                    setState(() {
+                      selectedPermissions.clear();
+                    });
+                  },
+                  icon: const Icon(Icons.remove_done),
+                  label: const Text("Unselect All"),
+                ),
+              ],
+            ),
+            //const SizedBox(height: 12),
+
 
             // Permissions List
             Expanded(

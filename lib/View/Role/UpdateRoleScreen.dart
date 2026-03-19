@@ -27,6 +27,10 @@ class _UpdateRoleScreenState extends State<UpdateRoleScreen> {
   bool isLoading = false;
   bool _initialDataLoaded = false;
 
+  bool get isAllSelected => selectedPermissions.length == allPermissions.length;
+
+  bool get isNoneSelected => selectedPermissions.isEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -118,6 +122,37 @@ class _UpdateRoleScreenState extends State<UpdateRoleScreen> {
                   style: AppText.BodyText()
                 ),
                 const SizedBox(height: 16),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton.icon(
+                      onPressed: isAllSelected
+                          ? null
+                          : () {
+                        setState(() {
+                          selectedPermissions.clear();
+                          selectedPermissions.addAll(allPermissions);
+                        });
+                      },
+                      icon: const Icon(Icons.select_all),
+                      label: const Text("Select All"),
+                    ),
+                    TextButton.icon(
+                      onPressed: isNoneSelected
+                          ? null
+                          : () {
+                        setState(() {
+                          selectedPermissions.clear();
+                        });
+                      },
+                      icon: const Icon(Icons.remove_done),
+                      label: const Text("Unselect All"),
+                    ),
+                  ],
+                ),
+                //const SizedBox(height: 12),
+
 
                 // Permissions List
                 Expanded(

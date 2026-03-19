@@ -76,7 +76,12 @@ class TextInputField extends StatelessWidget {
           borderSide: BorderSide(color: color.warningColor, width: 2),
         ),
         prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
+        suffixIcon: suffixIcon != null && onSuffixPressed != null
+            ? IconButton(
+          icon: suffixIcon!,
+          onPressed: onSuffixPressed,
+        )
+            : suffixIcon,
         contentPadding: EdgeInsets.symmetric(
           vertical: maxLines == 1 ? 16 : 12,
           horizontal: 16,

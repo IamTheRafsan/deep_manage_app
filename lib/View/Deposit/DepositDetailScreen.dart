@@ -1,3 +1,4 @@
+import 'package:deep_manage_app/Component/SafeArea/DetailScreenSafeArea.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Bloc/Deposit/DepositBloc.dart';
@@ -81,191 +82,195 @@ class _DepositDetailScreenState extends State<DepositDetailScreen> {
                 statusColor = Colors.grey;
             }
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Deposit Header Card
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: color.cardBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: color.primaryColor,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Deposit Header Card
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: color.cardBackgroundColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
                                 color: color.primaryColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.account_balance_wallet_outlined,
-                                color: Colors.white,
-                                size: 24,
                               ),
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    deposit.name,
-                                    style: AppText.HeadingText(),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: statusColor.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      deposit.status,
-                                      style: AppText.BodyText().copyWith(
-                                        color: statusColor,
-                                        fontWeight: FontWeight.w500,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: color.primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.account_balance_wallet_outlined,
+                                        color: Colors.white,
+                                        size: 24,
                                       ),
                                     ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            deposit.name,
+                                            style: AppText.HeadingText(),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: statusColor.withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              deposit.status,
+                                              style: AppText.BodyText().copyWith(
+                                                color: statusColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  "Amount: ৳${deposit.amount}",
+                                  style: AppText.SubHeadingText().copyWith(
+                                    color: Colors.green,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Deposit Information Section
+                          Text(
+                            "Deposit Details",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          InfoCard(
+                            icon: Icons.category_outlined,
+                            title: "Category",
+                            value: deposit.categoryName ?? 'N/A',
+                          ),
+                          const SizedBox(height: 12),
+
+                          InfoCard(
+                            icon: Icons.description_outlined,
+                            title: "Description",
+                            value: deposit.description.isNotEmpty ? deposit.description : 'No description',
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Related Information Section
+                          Text(
+                            "Related Information",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          if (deposit.warehouseName != null && deposit.warehouseName!.isNotEmpty)
+                            InfoCard(
+                              icon: Icons.warehouse_outlined,
+                              title: "Warehouse",
+                              value: deposit.warehouseName!,
+                            ),
+                          const SizedBox(height: 12),
+
+                          if (deposit.outletName != null && deposit.outletName!.isNotEmpty)
+                            InfoCard(
+                              icon: Icons.store_outlined,
+                              title: "Outlet",
+                              value: deposit.outletName!,
+                            ),
+                          const SizedBox(height: 12),
+
+                          if (deposit.userName != null && deposit.userName!.isNotEmpty)
+                            InfoCard(
+                              icon: Icons.person_outlined,
+                              title: "Created By",
+                              value: deposit.userName!,
+                            ),
+
+                          const SizedBox(height: 28),
+
+                          // Audit Information
+                          Text(
+                            "Audit Information",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          InfoCard(
+                            icon: Icons.calendar_today_outlined,
+                            title: "Created Date",
+                            value: "${deposit.created_date} at ${deposit.created_time}",
+                          ),
+                          const SizedBox(height: 12),
+
+                          InfoCard(
+                            icon: Icons.update_outlined,
+                            title: "Last Updated",
+                            value: "${deposit.updated_date} at ${deposit.updated_time}",
+                          ),
+
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+                    )
+                ),
+                CustomSafeArea(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: RedButton(
+                            text: 'Delete Deposit',
+                            onPressed: () {
+                              context.read<DepositBloc>().add(DeleteDeposit(deposit.id));
+                            },
+                          ),
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          "Amount: ৳${deposit.amount}",
-                          style: AppText.SubHeadingText().copyWith(
-                            color: Colors.green,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: PrimaryButton(
+                            text: 'Update Deposit',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UpdateDepositScreen(
+                                    depositId: deposit.id,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],
                     ),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Deposit Information Section
-                  Text(
-                    "Deposit Details",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  InfoCard(
-                    icon: Icons.category_outlined,
-                    title: "Category",
-                    value: deposit.categoryName ?? 'N/A',
-                  ),
-                  const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.description_outlined,
-                    title: "Description",
-                    value: deposit.description.isNotEmpty ? deposit.description : 'No description',
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Related Information Section
-                  Text(
-                    "Related Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  if (deposit.warehouseName != null && deposit.warehouseName!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.warehouse_outlined,
-                      title: "Warehouse",
-                      value: deposit.warehouseName!,
-                    ),
-                  const SizedBox(height: 12),
-
-                  if (deposit.outletName != null && deposit.outletName!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.store_outlined,
-                      title: "Outlet",
-                      value: deposit.outletName!,
-                    ),
-                  const SizedBox(height: 12),
-
-                  if (deposit.userName != null && deposit.userName!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.person_outlined,
-                      title: "Created By",
-                      value: deposit.userName!,
-                    ),
-
-                  const SizedBox(height: 28),
-
-                  // Audit Information
-                  Text(
-                    "Audit Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  InfoCard(
-                    icon: Icons.calendar_today_outlined,
-                    title: "Created Date",
-                    value: "${deposit.created_date} at ${deposit.created_time}",
-                  ),
-                  const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.update_outlined,
-                    title: "Last Updated",
-                    value: "${deposit.updated_date} at ${deposit.updated_time}",
-                  ),
-
-                  const SizedBox(height: 40),
-
-                  // Action Buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RedButton(
-                          text: 'Delete Deposit',
-                          onPressed: () {
-                            context.read<DepositBloc>().add(DeleteDeposit(deposit.id));
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: PrimaryButton(
-                          text: 'Update Deposit',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UpdateDepositScreen(
-                                  depositId: deposit.id,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
+                )
+              ],
             );
           }
 

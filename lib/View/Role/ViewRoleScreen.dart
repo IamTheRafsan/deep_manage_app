@@ -35,7 +35,10 @@ class _ViewRoleScreenState extends State<ViewRoleScreen> {
               child: CircularProgressIndicator(),
             );
           } else if (state is RoleLoaded) {
-            final List<RoleModel> roles = state.roles.where((role) => role.deleted != 1).toList();
+            final List<RoleModel> roles = state.roles
+                .where((role) => role.deleted != 1)
+                .toList()
+                ..sort((a, b) => b.role_id.compareTo(a.role_id));
 
             if (roles.isEmpty) {
               return _buildEmptyState();

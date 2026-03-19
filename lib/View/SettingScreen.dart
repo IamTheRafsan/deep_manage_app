@@ -1,3 +1,4 @@
+import 'package:deep_manage_app/Component/GlobalScaffold/GlobalScaffold.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -5,8 +6,9 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.red,
+    return GlobalScaffold(
+      title: 'Settings',
+      body: Material(),
     );
   }
 }

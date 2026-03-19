@@ -55,7 +55,7 @@ class _AddWeightLessScreenState extends State<AddWeightLessScreen> {
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
-      title: "Add Weight Loss",
+      title: "Add Weight Less",
       body: BlocConsumer<WeightLessBloc, WeightLessState>(
         listener: (context, state) {
           if (state is WeightLessCreated) {

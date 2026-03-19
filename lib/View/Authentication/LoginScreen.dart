@@ -1,6 +1,7 @@
 import 'package:deep_manage_app/Component/Buttons/PrimaryButton.dart';
 import 'package:deep_manage_app/Component/Inputs/TextInputField.dart';
 import 'package:deep_manage_app/Component/NavigationBar/CustomBottomNavigationBar.dart';
+import 'package:deep_manage_app/Component/SnackBar/WarningSnackBar.dart';
 import 'package:deep_manage_app/Styles/Color.dart';
 import 'package:deep_manage_app/View/HomeScreen.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late AuthBloc _authBloc;
+  bool _obsecurePassword = true;
 
   @override
   void initState() {
@@ -66,12 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         if (state is AuthFailure) {
           print('❌ Login failed: ${state.error}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              backgroundColor: color.warningColor,
-            ),
-          );
+          WarningSnackBar.show(context, message: "Login Failed: Please enter correct Email and Password");
         }
       },
       child: Scaffold(
@@ -113,7 +110,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: 'Password',
                           controller: _passwordController,
                           prefixIcon: const Icon(Icons.lock),
-                          obscureText: true,
+                          obscureText: _obsecurePassword,
+                          suffixIcon: Icon(
+                            _obsecurePassword ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onSuffixPressed: () {
+                            setState(() {
+                              _obsecurePassword = !_obsecurePassword; // Toggle the value
+                            });
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter password';
@@ -136,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     : "Sign In",
                                 onPressed: state is AuthLoading
                                     ? null
-                                    : _handleLogin, // Use the extracted method
+                                    : _handleLogin,
                               ),
                             );
                           },

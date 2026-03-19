@@ -31,9 +31,9 @@ class InfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor ?? color.cardBackgroundColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: borderColor ?? color.primaryColor,
-        ),
+        // border: Border.all(
+        //   color: borderColor ?? color.primaryColor,
+        // ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

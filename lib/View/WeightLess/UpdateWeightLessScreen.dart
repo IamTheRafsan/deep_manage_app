@@ -59,7 +59,7 @@ class _UpdateWeightLessScreenState extends State<UpdateWeightLessScreen> {
   @override
   Widget build(BuildContext context) {
     return GlobalScaffold(
-      title: "Update Weight Loss",
+      title: "Update Weight Less",
       body: BlocConsumer<WeightLessBloc, WeightLessState>(
         listener: (context, state) {
           if (state is WeightLessLoadedSingle && !_initialDataLoaded) {

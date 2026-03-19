@@ -1,3 +1,4 @@
+import 'package:deep_manage_app/Component/SafeArea/DetailScreenSafeArea.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -88,212 +89,212 @@ class _WarehouseDetailScreenState extends State<WarehouseDetailScreen> {
           if (state is WarehouseLoadedSingle) {
             final warehouse = state.warehouse;
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Warehouse Header Card with Deleted Status
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: warehouse.deleted ? Colors.red.shade50 : color.cardBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: warehouse.deleted ? Colors.red : color.primaryColor,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Warehouse Header Card with Deleted Status
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: warehouse.deleted ? Colors.red.shade50 : color.cardBackgroundColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
                                 color: warehouse.deleted ? Colors.red : color.primaryColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.warehouse_outlined,
-                                color: Colors.white,
-                                size: 24,
                               ),
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    warehouse.name,
-                                    style: AppText.HeadingText(),
-                                  ),
-                                  const SizedBox(height: 4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: warehouse.deleted ? Colors.red : color.primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.warehouse_outlined,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            warehouse.name,
+                                            style: AppText.HeadingText(),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 12, vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: warehouse.status == 'ACTIVE'
+                                                      ? Colors.green.shade100
+                                                      : Colors.orange.shade100,
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                child: Text(
+                                                  warehouse.status,
+                                                  style: AppText.BodyText().copyWith(
+                                                    color: warehouse.status == 'ACTIVE'
+                                                        ? Colors.green
+                                                        : Colors.orange,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (warehouse.deleted) ...[
+                                                const SizedBox(width: 8),
+                                                Container(
+                                                  padding: const EdgeInsets.symmetric(
+                                                      horizontal: 12, vertical: 4),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.red.shade100,
+                                                    borderRadius: BorderRadius.circular(20),
+                                                  ),
+                                                  child: Text(
+                                                    "DELETED",
+                                                    style: AppText.BodyText().copyWith(
+                                                      color: Colors.red,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (warehouse.deleted) ...[
+                                  const SizedBox(height: 12),
+                                  Divider(color: Colors.red.shade200),
                                   Row(
                                     children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: warehouse.status == 'ACTIVE'
-                                              ? Colors.green.shade100
-                                              : Colors.orange.shade100,
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
+                                      Icon(Icons.delete_outline, size: 16, color: Colors.red),
+                                      const SizedBox(width: 8),
+                                      Expanded(
                                         child: Text(
-                                          warehouse.status,
-                                          style: AppText.BodyText().copyWith(
-                                            color: warehouse.status == 'ACTIVE'
-                                                ? Colors.green
-                                                : Colors.orange,
-                                            fontWeight: FontWeight.w500,
+                                          "Deleted by ${warehouse.deletedByName} on ${warehouse.deletedDate}",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 14,
                                           ),
                                         ),
                                       ),
-                                      if (warehouse.deleted) ...[
-                                        const SizedBox(width: 8),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red.shade100,
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: Text(
-                                            "DELETED",
-                                            style: AppText.BodyText().copyWith(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
                                     ],
                                   ),
                                 ],
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                        if (warehouse.deleted) ...[
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Contact Information Section
+                          Text(
+                            "Contact Details",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          InfoCard(
+                            icon: Icons.email,
+                            title: "Email",
+                            value: warehouse.email,
+                          ),
                           const SizedBox(height: 12),
-                          Divider(color: Colors.red.shade200),
+
+                          InfoCard(
+                            icon: Icons.phone,
+                            title: "Mobile",
+                            value: warehouse.mobile,
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Location Information Section
+                          Text(
+                            "Location Information",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          InfoCard(
+                            icon: Icons.flag,
+                            title: "Country",
+                            value: warehouse.country,
+                          ),
+                          const SizedBox(height: 12),
+
                           Row(
                             children: [
-                              Icon(Icons.delete_outline, size: 16, color: Colors.red),
-                              const SizedBox(width: 8),
                               Expanded(
-                                child: Text(
-                                  "Deleted by ${warehouse.deletedByName} on ${warehouse.deletedDate}",
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 14,
-                                  ),
+                                child: InfoCard(
+                                  icon: Icons.location_city_outlined,
+                                  title: "City",
+                                  value: warehouse.city,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: InfoCard(
+                                  icon: Icons.pin_drop_outlined,
+                                  title: "Area",
+                                  value: warehouse.area,
                                 ),
                               ),
                             ],
                           ),
+
+                          const SizedBox(height: 28),
+
+                          // Audit Information
+                          Text(
+                            "Audit Information",
+                            style: AppText.SubHeadingText(),
+                          ),
+                          const SizedBox(height: 16),
+
+                          const SizedBox(height: 12),
+
+                          InfoCard(
+                            icon: Icons.calendar_today_outlined,
+                            title: "Created Date",
+                            value: "${warehouse.created_date} at ${warehouse.created_time}",
+                          ),
+                          const SizedBox(height: 12),
+
+
+                          if (warehouse.updated_date != null && warehouse.updated_date!.isNotEmpty)
+                            InfoCard(
+                              icon: Icons.update_outlined,
+                              title: "Last Updated",
+                              value: "${warehouse.updated_date} at ${warehouse.updated_time}",
+                            ),
+
+                          const SizedBox(height: 40),
                         ],
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Contact Information Section
-                  Text(
-                    "Contact Details",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  InfoCard(
-                    icon: Icons.email,
-                    title: "Email",
-                    value: warehouse.email,
-                  ),
-                  const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.phone,
-                    title: "Mobile",
-                    value: warehouse.mobile,
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Location Information Section
-                  Text(
-                    "Location Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  InfoCard(
-                    icon: Icons.flag,
-                    title: "Country",
-                    value: warehouse.country,
-                  ),
-                  const SizedBox(height: 12),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InfoCard(
-                          icon: Icons.location_city_outlined,
-                          title: "City",
-                          value: warehouse.city,
-                        ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: InfoCard(
-                          icon: Icons.pin_drop_outlined,
-                          title: "Area",
-                          value: warehouse.area,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Audit Information
-                  Text(
-                    "Audit Information",
-                    style: AppText.SubHeadingText(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  const SizedBox(height: 12),
-
-                  InfoCard(
-                    icon: Icons.calendar_today_outlined,
-                    title: "Created Date",
-                    value: "${warehouse.created_date} at ${warehouse.created_time}",
-                  ),
-                  const SizedBox(height: 12),
-
-
-                  if (warehouse.updated_date != null && warehouse.updated_date!.isNotEmpty)
-                    InfoCard(
-                      icon: Icons.update_outlined,
-                      title: "Last Updated",
-                      value: "${warehouse.updated_date} at ${warehouse.updated_time}",
-                    ),
-
-                  const SizedBox(height: 40),
-
-                  // Action Buttons
-                  if (warehouse.deleted)
-                    PrimaryButton(
-                      text: 'Restore Warehouse',
-                      onPressed: () => _restoreWarehouse(warehouse),
                     )
-                  else
-                    Row(
+                ),
+                CustomSafeArea(
+                    child: Row(
                       children: [
                         Expanded(
                           child: RedButton(
@@ -320,10 +321,8 @@ class _WarehouseDetailScreenState extends State<WarehouseDetailScreen> {
                         ),
                       ],
                     ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
+                )
+              ],
             );
           }
 

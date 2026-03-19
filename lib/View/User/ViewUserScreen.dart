@@ -2,7 +2,7 @@ import 'package:deep_manage_app/Component/Cards/ViewCard.dart';
 import 'package:deep_manage_app/Component/CircularIndicator/CustomCircularIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../Bloc/User/UserBlock.dart';
+import '../../Bloc/User/UserBloc.dart';
 import '../../Bloc/User/UserState.dart';
 import '../../Bloc/User/UserEvent.dart';
 import '../../Model/User/UserModel.dart';
@@ -36,7 +36,8 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
             );
           } else if (state is UserLoaded) {
             final List<UserModel> activeUsers =
-            state.users.where((user) => !user.deleted).toList();
+            state.users.where((user) => !user.deleted).toList()
+          ..sort((a,b) => b.userId.compareTo(a.userId));
 
             if (activeUsers.isEmpty) {
               return _buildEmptyState();

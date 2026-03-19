@@ -59,10 +59,16 @@ class PrimaryButton extends StatelessWidget{
           children: [
             Icon(icon, size: 20),
             SizedBox(width: 8),
-            Text(text , style: AppText.buttonText()),
+            Text(text , style: AppText.buttonText(),
+              textAlign: TextAlign.center,
+              softWrap: true,
+            ),
           ],
         )
-            : Text(text, style: AppText.buttonText()),
+            : Text(text, style: AppText.buttonText(),
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
       ),
      );
   }

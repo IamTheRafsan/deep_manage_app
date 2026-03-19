@@ -54,7 +54,7 @@ class RoleCard extends StatelessWidget {
 
   Widget _header(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
@@ -72,10 +72,11 @@ class RoleCard extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(role.name, style: AppText.SubHeadingText()),
-              const SizedBox(height: 4),
-              Text("ID: ${role.role_id}", style: AppText.BodyText()),
+              //const SizedBox(height: 4),
+              //Text("ID: ${role.role_id}", style: AppText.BodyText()),
             ],
           ),
         ),

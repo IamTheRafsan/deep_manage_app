@@ -51,10 +51,13 @@ import 'ApiService/ProductApi/ProductApi.dart';
 import 'ApiService/RoleApi/RoleApi.dart';
 import 'ApiService/SaleApi/SaleApi.dart';
 import 'ApiService/WeightWastageApi/WeightWastageApi.dart';
+import 'Bloc/Authentication/AuthEvent.dart';
 import 'Bloc/Purchase/PurchaseBloc.dart';
 import 'Bloc/Sale/SaleBloc.dart';
-import 'Bloc/User/UserBlock.dart';
+import 'Bloc/User/UserBloc.dart';
 import 'Repository/RoleRepository.dart';
+import 'Service/AuthGate.dart';
+import 'Service/GlobalBloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,9 +113,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-          AuthBloc(authRepository: authRepository)
-            //..add(CheckLoginStatusEvent()),
+          create: (context){
+              final bloc = AuthBloc(authRepository: authRepository)
+                ..add(CheckLoginStatusEvent());
+
+              GlobalBloc.authBloc = bloc;
+              return bloc;
+          }
         ),
 
         BlocProvider(
@@ -174,7 +181,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
-          home: LoginScreen(),
+          home: AuthGate(),
 
         ),
     );
